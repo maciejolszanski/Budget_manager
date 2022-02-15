@@ -1,3 +1,9 @@
+# venv
 /bm_env
-/budget_manager/__pycache__
+
+# temporary
+*/__pycache__
+*.pyc
+
+# databases
 *.sqlite3

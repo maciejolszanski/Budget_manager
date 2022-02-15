@@ -1,0 +1,28 @@
+{% load bootstrap4 %}
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,
+        shrink-to-fit=no">
+    <title>Budget Manager</title>
+
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
+  </head>
+
+<body>
+  <p>Budget Manager</p>
+
+  <main role="main" class="container">
+    <div class="pb-2 mb-2 border-bottoom">
+        {% block page_header %}{% endblock page_header %}
+    </div>
+    <div>
+        {% block content %}{% endblock content %}
+    </div>
+  </main>
+
+</body>
+</html>
