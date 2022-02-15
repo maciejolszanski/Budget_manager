@@ -32,10 +32,11 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     # my apps
-    'budget', 
+    'budget',
+    'users',
 
     # foreign vendors apps
-    'bootstrap4',   
+    'bootstrap4',
 
     # django default apps
     'django.contrib.admin',
