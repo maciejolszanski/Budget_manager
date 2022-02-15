@@ -13,11 +13,42 @@
   </head>
 
 <body>
-  <p>
-      <a href="{% url 'budget:index' %}">Budget Manager</a> - 
-      <a href="{% url 'users:login' %}">Login</a> - 
-      <a href="{% url 'users:register' %}">Register</a> - 
-  </p>
+    <body>
+        <nav class="navbar navbar-expand-md nabar-light bg-light mb-4 border">
+    
+            <a class="navbar-brand" href="{% url 'budget:index' %}">
+              Budget Manager</a>
+    
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarCollapse" aria-controls="navbarCollapse"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span></button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <u1 class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a>BUDGET</a>
+              </li>
+            </u1>
+            <u1 class="navbar-nav ml-auto">
+              {% if user.is_authenticated %}
+                <li class="nav-item">
+                  <span class="navbar-text">Witaj, {{user.username}}!</span>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'users:logout' %}">Wyloguj</a>
+                </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:register' %}">
+                  Zarejestruj</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'users:login' %}">Zaloguj</a>
+              </li>
+              {% endif %}
+            </u1>
+          </div>
+        </nav>
 
   <main role="main" class="container">
     <div class="pb-2 mb-2 border-bottoom">
@@ -30,3 +61,4 @@
 
 </body>
 </html>
+
