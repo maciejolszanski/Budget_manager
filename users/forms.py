@@ -10,7 +10,7 @@ class CustomUserCreationForm(UserCreationForm):
     """My own user creation form containing e-mail"""
 
     username = forms.CharField(label="Username", min_length=5, max_length=100,)
-    email = forms.EmailField(label='Email')
+    email = forms.EmailField(label='Email (optional)', required=False)
     password1 = forms.CharField(label="Password", widget=forms.PasswordInput())
     password2 = forms.CharField(label="Confirm password", 
                                 widget = forms.PasswordInput())
