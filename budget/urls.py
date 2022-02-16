@@ -8,4 +8,5 @@ app_name = 'budget'
 urlpatterns = [
     # main site
     path('', views.index, name='index'),
+    path('budget', views.budget, name='budget'),
 ]

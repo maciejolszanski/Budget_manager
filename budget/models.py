@@ -1,8 +1,11 @@
-from email.policy import default
-from tabnanny import verbose
-from tkinter import CASCADE
 from django.db import models
+from django.contrib.auth.models import User
 
+
+class Budget(models.Model):
+    '''Class that represents the whole user's budget'''
+
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Category(models.Model):
     '''Category of the spending eg. Food'''
@@ -16,6 +19,20 @@ class Category(models.Model):
         '''returns the model as a string'''
         return self.name
 
+    def sum_goals(self):
+        '''sum all of the subcategories goals'''
+        goal_total = sum([sub.goal for sub in self.subcategory_set.all()])
+        return goal_total
+
+    def sum_spendings(self):
+        '''sum all of the subcategories spendings'''
+        spent_total = sum([sub.spent for sub in self.subcategory_set.all()])
+        return spent_total
+
+    def calc_balance(self):
+        '''calculate the balance of whole category'''
+        return self.sum_goals() - self.sum_spendings()
+
     class Meta:
         verbose_name_plural = 'Categories'
 
@@ -26,12 +43,13 @@ class SubCategory(models.Model):
     name = models.CharField(max_length=400)
     goal = models.FloatField(default=0)
     spent = models.FloatField(default=0)
-    # balance = goal - spent
+    
+    def calc_balance(self):
+        '''calculate the balance of subcategory'''
+        return self.goal - self.spent
 
     def __str__(self):
         return self.name
 
     class Meta:
         verbose_name_plural = 'SubCategories'
-
-
