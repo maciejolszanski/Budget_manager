@@ -10,7 +10,8 @@ def index(request):
 def budget(request):
     '''Main user site'''
 
-    budget = Budget.objects.filter(owner=request.user)
-    context = {'budget': budget}
+    budget = Budget.objects.filter(owner=request.user).get(id=1)
+    categories = budget.category_set.all()
+    context = {'budget': budget, 'categories': categories}
 
     return render(request, 'budget/budget.html', context)

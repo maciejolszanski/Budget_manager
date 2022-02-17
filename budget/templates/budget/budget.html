@@ -1,6 +1,17 @@
 {% extends 'budget/base.html' %}
 
 {% block page_header %}
-    <p>Hello</p>
+    <h2>This is your budget</h2>
 {% endblock page_header %}
+
+{% block content %}
+    {% if budget %}
+        {% for cat in categories %}
+            <li>{{cat.name}} --- {{cat.sum_goals}} --- {{cat.sum_spendings}} 
+                --- {{cat.calc_balance}}</li>
+        {% endfor %}
+    {% else %}
+        <h3>You have not created any budget yet</h3>
+    {% endif %}
+{% endblock content %}
 
