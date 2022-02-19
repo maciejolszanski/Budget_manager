@@ -1,15 +1,39 @@
 {% extends 'budget/base.html' %}
 
 {% block page_header %}
+    <p style="color:red; font-size:10px">KOCHAM POLUŚKĘ <3</p>
     <h2>This is your budget</h2>
 {% endblock page_header %}
 
 {% block content %}
     {% if budget %}
-        {% for cat in categories %}
-            <li>{{cat.name}} --- {{cat.sum_goals}} --- {{cat.sum_spendings}} 
-                --- {{cat.calc_balance}}</li>
+    <table class="table">
+        <tr style="font-size:22px">
+            <th>Category</th>
+            <th>Goal</th>
+            <th>Spendings</th>
+            <th>Balance</th>
+            <th></th>
+        </tr>   
+
+        {% for cat, subs in sub_dict.items %}
+        <tr>
+            <td><b>{{cat.name}}</b></td>
+            <td><b>{{cat.sum_goals}}</b></td>
+            <td><b>{{cat.sum_spendings}}</b></td>
+            <td><b>{{cat.calc_balance}}</b></td>
+            <td><a>EDIT</a></td>
+        </tr>
+            {% for sub in subs %} 
+            <tr style="font-size:14px">
+                <td>{{sub.name}}</td>
+                <td>{{sub.goal}}</td>
+                <td>{{sub.spent}}</td>
+                <td>{{sub.calc_balance}}</td>
+            </tr>
+            {% endfor %}
         {% endfor %}
+    </table>
     {% else %}
         <h3>You have not created any budget yet</h3>
     {% endif %}
