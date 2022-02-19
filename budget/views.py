@@ -13,6 +13,9 @@ def index(request):
 def budget(request):
     '''Main user site'''
 
+    # post will only happen when there is no budget 
+    # and user creates it with "create default budget" button, 
+    # so when user has already its own budget, it will just be displayed
     if request.method != 'POST':
         # Display the budget
         try:
@@ -32,6 +35,8 @@ def budget(request):
         # Only if the 'create default budget' button was clicked
         budget = Budget(name='moj', owner=request.user)
         budget.save()
+
+        # names of defaul categories an subcategories
         categories_names = {
             'Food': [
                 'Grocery shopping',
@@ -50,6 +55,7 @@ def budget(request):
             }
         sub_dict = {}
 
+        # creating default objects of categories and subcategories
         for cat, subs in categories_names.items() :
             category = Category(budget=budget, name=cat)
             category.save()
