@@ -8,14 +8,15 @@
 {% block content %}
     {% if budget %}
     <table class="table">
+      <thead class="thead-dark">
         <tr style="font-size:22px">
             <th>Category</th>
             <th>Goal</th>
             <th>Spendings</th>
             <th>Balance</th>
             <th></th>
-        </tr>   
-
+        </tr>
+    </thead>
         {% for cat, subs in sub_dict.items %}
         <tr>
             <td><b>{{cat.name}}</b></td>
@@ -24,6 +25,7 @@
             <td><b>{{cat.calc_balance}}</b></td>
             <td><a>EDIT</a></td>
         </tr>
+
             {% for sub in subs %} 
             <tr style="font-size:14px">
                 <td>{{sub.name}}</td>
@@ -32,10 +34,15 @@
                 <td>{{sub.calc_balance}}</td>
             </tr>
             {% endfor %}
+
         {% endfor %}
     </table>
     {% else %}
         <h3>You have not created any budget yet</h3>
+        <form action="{% url 'budget:budget' %}" method="post">
+            {% csrf_token %}
+            <button name='submit' class="btn btn-primary">Create Budget with default categories</button>
+        </form>
     {% endif %}
 {% endblock content %}
 

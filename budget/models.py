@@ -1,12 +1,20 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+# class BudgetManager(models.Manager):
+#     '''class that enables creating budget'''
+    
+#     def create_budget(self, owner):
+#         budget = self.create(owner=owner)
+#         return budget
 
 class Budget(models.Model):
     '''Class that represents the whole user's budget'''
 
     name = models.CharField(max_length=200, default='Budget')
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # objects = BudgetManager()
 
     def __str__(self):
         return self.name
@@ -16,9 +24,6 @@ class Category(models.Model):
 
     budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
-    # it shoul be a sum of all subcategories goals, spending and balances
-    # for example:
-    # goal_total = sum([sub.goal for sub in food.subcategory_set.all()]) 
 
     def __str__(self):
         '''returns the model as a string'''
