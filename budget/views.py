@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Budget, Category, SubCategory
 from .forms import EditSubCategoryForm
+from .charts import get_pie_div
 
 # Create your views here.
 def index(request):
@@ -25,11 +26,14 @@ def budget(request):
             sub_dict = {}
             for category in categories:
                 sub_dict[category] = category.subcategory_set.all()
+            
         except:
-            budget = NULL
+            budget = None
             sub_dict = {}
-
-        context = {'budget': budget, 'sub_dict': sub_dict}
+ 
+        graph = get_pie_div(budget)
+        
+        context = {'budget': budget, 'sub_dict': sub_dict, 'graph': graph}
         return render(request, 'budget/budget.html', context)
 
     else:

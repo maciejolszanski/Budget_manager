@@ -2,7 +2,6 @@
 
 {% block page_header %}
     <p style="color:red; font-size:10px">KOCHAM POLUŚKĘ <3</p>
-    <h2>This is your budget</h2>
 {% endblock page_header %}
 
 {% block content %}
@@ -42,6 +41,9 @@
 
         {% endfor %}
     </table>
+
+    {{graph|safe}}
+
     {% else %}
         <h3>You have not created any budget yet</h3>
         <form action="{% url 'budget:budget' %}" method="post">
