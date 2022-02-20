@@ -1,9 +1,10 @@
-from asyncio.windows_events import NULL
 from re import sub, template
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+
 from .models import Budget, Category, SubCategory
-from django.views.generic.list import ListView
+from .forms import EditSubCategoryForm
 
 # Create your views here.
 def index(request):
@@ -72,4 +73,21 @@ def budget(request):
 
         context = {'budget': budget, 'sub_dict': sub_dict}
         return render(request, 'budget/budget.html', context)
-            
+
+@login_required            
+def edit_subcategory(request, subcategory_id):
+    '''editing data of goals and spendings in category'''
+
+    subcat = SubCategory.objects.get(id=subcategory_id)
+    category = subcat.category
+
+    if request.method != 'POST':
+        form = EditSubCategoryForm(instance=subcat)
+    else:
+        form = EditSubCategoryForm(instance=subcat, data=request.POST)
+        form.save()
+
+        return redirect('budget:budget')
+    
+    context = {'subcat': subcat, 'category': category, 'form': form}
+    return render(request, "budget/edit_subcategory.html", context)

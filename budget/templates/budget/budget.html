@@ -23,7 +23,7 @@
             <td><b>{{cat.sum_goals}}</b></td>
             <td><b>{{cat.sum_spendings}}</b></td>
             <td><b>{{cat.calc_balance}}</b></td>
-            <td><a>EDIT</a></td>
+            <td></td>
         </tr>
 
             {% for sub in subs %} 
@@ -32,6 +32,11 @@
                 <td>{{sub.goal}}</td>
                 <td>{{sub.spent}}</td>
                 <td>{{sub.calc_balance}}</td>
+                <td>
+                  <a href="{% url 'budget:edit_subcategory' sub.id %}">
+                        EDIT
+                  </a>
+                </td>
             </tr>
             {% endfor %}
 
