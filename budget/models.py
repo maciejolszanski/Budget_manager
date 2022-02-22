@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+import datetime
+
 # class BudgetManager(models.Manager):
 #     '''class that enables creating budget'''
     
@@ -14,16 +16,46 @@ class Budget(models.Model):
     name = models.CharField(max_length=200, default='Budget')
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    # objects = BudgetManager()
-
     def __str__(self):
         return self.name
+
+class Month(models.Model):
+    '''Class that represents the month in a year'''
+
+    class monthOfTheYear(models.TextChoices):
+        JANUARY = '1'
+        FEBRUARY = 'February'
+        MARCH = '3'
+        APRIL = '4'
+        JUNE = '5'
+        JULY = '6'
+        AUGUST = '7'
+        SEPTEMBER = '8'
+        OCTOBER = '9'
+        NOVEMBER = '10'
+        DECEMBER = '11'
+    
+    class theYear(models.IntegerChoices):
+        YEAR_2021 = 2021
+        YEAR_2022 = 2022
+        YEAR_2023 = 2023
+        YEAR_2024 = 2024
+        YEAR_2025 = 2025
+
+    month = models.CharField(choices=monthOfTheYear.choices, max_length=200)
+    year = models.IntegerField(choices=theYear.choices)
+
+    budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
+
+    def __str__(self):
+        name = self.month  + ' ' + str(self.year)
+        return name
 
 class Category(models.Model):
     '''Category of the spending eg. Food'''
 
-    budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
+    month = models.ForeignKey(Month, on_delete=models.CASCADE)
 
     def __str__(self):
         '''returns the model as a string'''

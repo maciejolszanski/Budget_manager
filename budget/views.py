@@ -1,11 +1,13 @@
-from re import sub, template
+import datetime
+import calendar
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
-from .models import Budget, Category, SubCategory
+from .models import Budget, Category, SubCategory, Month
 from .forms import EditSubCategoryForm, EditCategory, AddSubcategory
 from .charts import get_pie_div
+
 
 # Create your views here.
 def index(request):
@@ -22,25 +24,36 @@ def budget(request):
         # Display the budget
         try:
             budget = Budget.objects.filter(owner=request.user).all()[0]
-            categories = budget.category_set.all()
+            print(budget)
+            month = budget.month_set.all().get()
+            print('miesiac', month)
+            categories = month.category_set.all()
+            print(categories)
             sub_dict = {}
             for category in categories:
                 sub_dict[category] = category.subcategory_set.all()
+
+            graph = None #get_pie_div(budget)
             
         except:
             budget = None
             sub_dict = {}
- 
-        graph = get_pie_div(budget)
-        
-        context = {'budget': budget, 'sub_dict': sub_dict, 'graph': graph}
+            graph = None
+            month = None
+
+        context = {
+            'budget': budget,
+            'month': month,
+            'sub_dict': sub_dict,
+            'graph': graph
+            }
         return render(request, 'budget/budget.html', context)
 
     else:
         # Only if the 'create default budget' button was clicked
-        budget, sub_dict = create_default_budget(request)
+        budget, month, sub_dict = create_default_budget(request)
 
-        context = {'budget': budget, 'sub_dict': sub_dict}
+        context = {'budget': budget, 'month': month, 'sub_dict': sub_dict}
         return render(request, 'budget/budget.html', context)
 
 def create_default_budget(request):
@@ -48,6 +61,14 @@ def create_default_budget(request):
 
     budget = Budget(name='moj', owner=request.user)
     budget.save()
+
+    date = datetime.datetime.today()
+    month_int = date.month
+    month = calendar.month_name[month_int]
+    year_int = date.year
+
+    month = Month(month=month, year=year_int, budget=budget)
+    month.save()
 
     # names of default categories an subcategories
     categories_names = {
@@ -70,7 +91,8 @@ def create_default_budget(request):
 
     # creating default objects of categories and subcategories
     for cat, subs in categories_names.items() :
-        category = Category(budget=budget, name=cat)
+
+        category = Category(month=month, name=cat)
         category.save()
 
         # list of subcategories objects
@@ -83,7 +105,7 @@ def create_default_budget(request):
 
         sub_dict[category] = subs_list
 
-    return budget, sub_dict
+    return budget, month, sub_dict,
 
 @login_required            
 def edit_subcategory(request, subcategory_id):
