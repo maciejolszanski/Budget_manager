@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 from .models import Budget, Category, SubCategory
-from .forms import EditSubCategoryForm
+from .forms import EditSubCategoryForm, EditCategory
 from .charts import get_pie_div
 
 # Create your views here.
@@ -95,3 +95,20 @@ def edit_subcategory(request, subcategory_id):
     
     context = {'subcat': subcat, 'category': category, 'form': form}
     return render(request, "budget/edit_subcategory.html", context)
+
+@login_required
+def edit_category(request, category_id):
+    '''editing the name of category'''
+
+    category = Category.objects.get(id=category_id)
+
+    if request.method != 'POST':
+        form = EditCategory(instance=category)
+    else:
+        form = EditCategory(instance=category, data=request.POST)
+        form.save()
+
+        return redirect('budget:budget')
+    
+    context = {'category': category, 'form': form}
+    return render(request, 'budget/edit_category.html', context)

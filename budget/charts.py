@@ -7,9 +7,6 @@ def get_pie_div(bud):
     categories = [cat.name for cat in cats]
     values=[cat.sum_spendings() for cat in cats]
 
-    print('values', values)
-    print('catgories', categories)
-
     fig = go.Figure()
     fig.add_trace(
         go.Pie(

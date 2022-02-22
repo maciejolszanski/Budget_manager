@@ -39,7 +39,9 @@
     </thead>
         {% for cat, subs in sub_dict.items %}
         <tr>
-            <td><b>{{cat.name}}</b></td>
+            <td><a href="{% url 'budget:edit_category' cat.id %}">
+              <b>{{cat.name}}</b></a>
+            </td>
             <td><b>{{cat.sum_goals}}</b></td>
             <td><b>{{cat.sum_spendings}}</b></td>
             <td><b>{{cat.calc_balance}}</b></td>
