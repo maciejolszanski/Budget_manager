@@ -24,5 +24,12 @@ urlpatterns = [
         'edit_category/<int:category_id>',
         views.edit_category,
         name='edit_category',
+    ),
+
+    # add subcategory to category
+    path(
+        'add_subcategory/<int:category_id>',
+        views.add_subcategory,
+        name='add_subcategory'
     )
 ]

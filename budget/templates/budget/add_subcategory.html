@@ -2,17 +2,17 @@
 {% load bootstrap4 %}
 
 {% block page_header %}
-    <h2>You are editing {{category}}</h2>
+    <h2>You are adding subcategory to {{category}}</h2>
 {% endblock page_header %}
 
 {% block content %}
-  <form method="post" action="{% url 'budget:edit_category' category.id %}"
+  <form method="post" action="{% url 'budget:add_subcategory' category.id %}"
   class="form">
     {% csrf_token %}
     {% bootstrap_form form %}
     {% buttons %}
       <button name="return" class="btn btn-primary">Save</button>
-      <button name="add" class="btn btn-primary float-right">Save and go to adding subcategories</button>
+      <button name="next" class="btn btn-primary float-right">Save and add another one</button>
     {% endbuttons %}
   
   </form>
