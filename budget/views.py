@@ -9,7 +9,6 @@ from .forms import EditSubCategoryForm, EditCategory, AddSubcategory
 from .charts import get_pie_div
 
 
-# Create your views here.
 def index(request):
     return render(request, 'budget/index.html')
 
@@ -21,33 +20,7 @@ def budget(request):
     # and user creates it with "create default budget" button, 
     # so when user has already its own budget, it will just be displayed
     if request.method != 'POST':
-        # Display the budget
-        try:
-            budget = Budget.objects.filter(owner=request.user).all()[0]
-            print(budget)
-            month = budget.month_set.all().get()
-            print('miesiac', month)
-            categories = month.category_set.all()
-            print(categories)
-            sub_dict = {}
-            for category in categories:
-                sub_dict[category] = category.subcategory_set.all()
-
-            graph = get_pie_div(month)
-            
-        except:
-            budget = None
-            sub_dict = {}
-            graph = None
-            month = None
-
-        context = {
-            'budget': budget,
-            'month': month,
-            'sub_dict': sub_dict,
-            'graph': graph
-            }
-        return render(request, 'budget/budget.html', context)
+        return display_budget(request)
 
     else:
         # Only if the 'create default budget' button was clicked
@@ -55,6 +28,31 @@ def budget(request):
 
         context = {'budget': budget, 'month': month, 'sub_dict': sub_dict}
         return render(request, 'budget/budget.html', context)
+
+def display_budget(request):
+    '''displays the budget'''
+
+    try:
+        budget = Budget.objects.filter(owner=request.user).all()[0]
+        month = budget.month_set.all().get()
+        categories = month.category_set.all()
+        sub_dict = {}
+        for category in categories:
+            sub_dict[category] = category.subcategory_set.all()
+        graph = get_pie_div(month)
+    except:
+        budget = None
+        sub_dict = {}
+        graph = None
+        month = None
+
+    context = {
+        'budget': budget,
+        'month': month,
+        'sub_dict': sub_dict,
+        'graph': graph
+        }
+    return render(request, 'budget/budget.html', context)
 
 def create_default_budget(request):
     '''create budget with default categories and subcategories'''
@@ -144,7 +142,8 @@ def edit_category(request, category_id):
                 return redirect('budget:budget')
 
             elif 'add' in request.POST:
-                return redirect('budget:add_subcategory', category_id=category_id)
+                return redirect('budget:add_subcategory', 
+                                category_id=category_id)
     
     context = {'category': category, 'form': form}
     return render(request, 'budget/edit_category.html', context)
