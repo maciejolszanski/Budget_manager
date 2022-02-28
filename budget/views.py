@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 from .models import Budget, Category, SubCategory, Month
-from .forms import EditSubCategoryForm, EditCategory, AddSubcategory
+from .forms import *
 from .charts import get_pie_div
 
 
@@ -23,11 +23,12 @@ def budget(request):
         return display_budget(request)
 
     else:
-        # Only if the 'create default budget' button was clicked
-        budget, month, sub_dict = create_default_budget(request)
+        if 'create' in request.POST:
+            # Only if the 'create default budget' button was clicked
+            budget, month, sub_dict = create_default_budget(request)
 
-        context = {'budget': budget, 'month': month, 'sub_dict': sub_dict}
-        return render(request, 'budget/budget.html', context)
+            context = {'budget': budget, 'month': month, 'sub_dict': sub_dict}
+            return render(request, 'budget/budget.html', context)
 
 def display_budget(request):
     '''displays the budget'''
@@ -131,10 +132,10 @@ def edit_category(request, category_id):
     category = Category.objects.get(id=category_id)
 
     if request.method != 'POST':
-        form = EditCategory(instance=category)
+        form = EditCategoryForm(instance=category)
     
     else:
-        form = EditCategory(instance=category, data=request.POST)
+        form = EditCategoryForm(instance=category, data=request.POST)
         if form.is_valid():
             form.save()
 
@@ -155,10 +156,10 @@ def add_subcategory(request, category_id):
     category = Category.objects.get(id=category_id)
 
     if request.method != 'POST':
-        form = AddSubcategory()
+        form = AddSubcategoryForm()
     
     else:
-        form = AddSubcategory(data=request.POST)
+        form = AddSubcategoryForm(data=request.POST)
         if form.is_valid():
             new_sub = form.save(commit=False)
             new_sub.category = category
@@ -168,7 +169,33 @@ def add_subcategory(request, category_id):
                 return redirect('budget:budget')
 
             elif 'next' in request.POST:
-                return redirect('budget:add_subcategory', category_id=category_id)
+                return redirect('budget:add_subcategory',
+                                category_id=category_id)
     
     context = {'category': category, 'form': form}
     return render(request, 'budget/add_subcategory.html', context)
+
+@login_required
+def add_category(request, month_id):
+    '''add category to budget'''
+
+    month = Month.objects.get(id=month_id)
+
+    if request.method != 'POST':
+        form = AddCategoryForm()
+    
+    else:
+        form = AddCategoryForm(data=request.POST)
+        if form.is_valid():
+            new_cat = form.save(commit=False)
+            new_cat.month = month
+            new_cat.save()
+        
+            if 'return' in request.POST:
+                return redirect('budget:budget')
+
+            elif 'next' in request.POST:
+                return redirect('budget:add_category', month_id = month_id)
+    
+    context = {'month': month, 'form': form}
+    return render(request, 'budget/add_category.html', context)

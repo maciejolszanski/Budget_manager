@@ -23,17 +23,18 @@ class Month(models.Model):
     '''Class that represents the month in a year'''
 
     class monthOfTheYear(models.TextChoices):
-        JANUARY = '1'
+        JANUARY = 'January'
         FEBRUARY = 'February'
-        MARCH = '3'
-        APRIL = '4'
-        JUNE = '5'
-        JULY = '6'
-        AUGUST = '7'
-        SEPTEMBER = '8'
-        OCTOBER = '9'
-        NOVEMBER = '10'
-        DECEMBER = '11'
+        MARCH = 'March'
+        APRIL = 'April'
+        MAY = 'May'
+        JUNE = 'June'
+        JULY = 'July'
+        AUGUST = 'August'
+        SEPTEMBER = 'September'
+        OCTOBER = 'October'
+        NOVEMBER = 'November'
+        DECEMBER = 'December'
     
     class theYear(models.IntegerChoices):
         YEAR_2021 = 2021
