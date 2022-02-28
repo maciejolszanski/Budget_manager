@@ -33,7 +33,7 @@ def budget(request):
             for category in categories:
                 sub_dict[category] = category.subcategory_set.all()
 
-            graph = None #get_pie_div(budget)
+            graph = get_pie_div(month)
             
         except:
             budget = None

@@ -2,8 +2,8 @@ import plotly.graph_objects as go
 from .models import Category
 
 
-def get_pie_div(bud):
-    cats = Category.objects.filter(budget=bud).all()
+def get_pie_div(mon):
+    cats = Category.objects.filter(month=mon).all()
     categories = [cat.name for cat in cats]
     values=[cat.sum_spendings() for cat in cats]
 
