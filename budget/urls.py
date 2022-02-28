@@ -31,5 +31,11 @@ urlpatterns = [
         'add_subcategory/<int:category_id>',
         views.add_subcategory,
         name='add_subcategory'
-    )
+    ),
+
+    # add category to month
+    path('add_category/<int:month_id>',
+        views.add_category,
+        name='add_category'
+    ),
 ]

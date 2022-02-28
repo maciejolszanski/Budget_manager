@@ -13,7 +13,7 @@ class EditSubCategoryForm(forms.ModelForm):
             'spent': 'Your current spendings',
             }
 
-class EditCategory(forms.ModelForm):
+class EditCategoryForm(forms.ModelForm):
     '''Edit name of the category'''
 
     class Meta:
@@ -21,14 +21,22 @@ class EditCategory(forms.ModelForm):
         fields = ['name']
         labels = {'name': 'Rename this category'}
 
-class AddSubcategory(forms.ModelForm):
+class AddCategoryForm(forms.ModelForm):
+    '''Edit name of the category'''
+
+    class Meta:
+        model = Category
+        fields = ['name']
+        labels = {'name': 'Name this category'}
+
+class AddSubcategoryForm(forms.ModelForm):
     '''Add subcategory to category'''
 
     class Meta:
         model = SubCategory
         fields = ['name', 'goal', 'spent']
         labels = {
-            'name': 'Name this category',
+            'name': 'Name this subcategory',
             'goal': 'Set your goal',
             'spent': 'Type all your recent spendings in this subcategory'
             }

@@ -1,7 +1,8 @@
 {% extends 'budget/base.html' %}
 
 {% block page_header %}
-    <p style="color:red; font-size:10px">KOCHAM POLUŚKĘ <3</p>
+    <p style="color:red; font-size:1px">KOCHAM POLUŚKĘ <3</p>
+    <h1>This is your budget for {{month}}</h1>
 {% endblock page_header %}
 
 {% block content %}
@@ -27,10 +28,11 @@
         </ul>
       </nav> -->
 
-    <table class="table table-hover table-sm">
+    <table class="table table-hover table-sm" style="width: 100%">
       <thead class="thead-dark">
         <tr style="font-size:22px">
             <th>Category</th>
+            <th></th>
             <th>Goal</th>
             <th>Spendings</th>
             <th>Balance</th>
@@ -39,9 +41,10 @@
     </thead>
         {% for cat, subs in sub_dict.items %}
         <tr>
-            <td><a href="{% url 'budget:edit_category' cat.id %}">
+            <td style="width: 5%"><a href="{% url 'budget:edit_category' cat.id %}">
               <b>{{cat.name}}</b></a>
             </td>
+            <td></td>
             <td><b>{{cat.sum_goals}}</b></td>
             <td><b>{{cat.sum_spendings}}</b></td>
             <td><b>{{cat.calc_balance}}</b></td>
@@ -50,6 +53,7 @@
 
             {% for sub in subs %} 
             <tr style="font-size:14px">
+                <td></td>
                 <td>{{sub.name}}</td>
                 <td>{{sub.goal}}</td>
                 <td>{{sub.spent}}</td>
@@ -61,8 +65,28 @@
                 </td>
             </tr>
             {% endfor %}
+        <tr>
+              <td></td>
+              <td><a href="{% url 'budget:add_subcategory' cat.id %}">
+                <b>(+)</b></a>
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+          </tr>
 
         {% endfor %}
+        <tr>
+          <td><a href="{% url 'budget:add_category' month.id %}">
+            <b>(+)</b></a>
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
     </table>
 
     {{graph|safe}}
@@ -71,7 +95,7 @@
         <h3>You have not created any budget yet</h3>
         <form action="{% url 'budget:budget' %}" method="post">
             {% csrf_token %}
-            <button name='submit' class="btn btn-primary">Create Budget with default categories</button>
+            <button name='create' class="btn btn-primary">Create Budget with default categories</button>
         </form>
     {% endif %}
 {% endblock content %}
