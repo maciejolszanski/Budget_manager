@@ -195,7 +195,7 @@ def add_category(request, month_id):
                 return redirect('budget:budget')
 
             elif 'next' in request.POST:
-                return redirect('budget:add_category', month_id = month_id)
+                return redirect('budget:add_category', month_id=month_id)
     
     context = {'month': month, 'form': form}
     return render(request, 'budget/add_category.html', context)
