@@ -1,5 +1,5 @@
 from django import forms
-from .models import SubCategory, Category
+from .models import Month, SubCategory, Category
 
 class EditSubCategoryForm(forms.ModelForm):
     '''Edit goals and spendings of the subcategory'''
@@ -40,5 +40,12 @@ class AddSubcategoryForm(forms.ModelForm):
             'goal': 'Set your goal',
             'spent': 'Type all your recent spendings in this subcategory'
             }
-    
-    
+
+class AddMonthForm(forms.ModelForm):
+    '''Add a month to a budget'''
+
+    class Meta:
+        model = Month
+        fields = ['month', 'year']
+        labels = {'month': 'Choose a month',
+                  'year': 'Choose a year'}

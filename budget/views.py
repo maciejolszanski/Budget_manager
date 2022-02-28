@@ -13,29 +13,35 @@ def index(request):
     return render(request, 'budget/index.html')
 
 @login_required
-def budget(request):
+def budget(request, month_id=None):
     '''Main user site'''
 
     # post will only happen when there is no budget 
     # and user creates it with "create default budget" button, 
     # so when user has already its own budget, it will just be displayed
     if request.method != 'POST':
-        return display_budget(request)
+        return display_budget(request, month_id)
 
     else:
         if 'create' in request.POST:
             # Only if the 'create default budget' button was clicked
-            budget, month, sub_dict = create_default_budget(request)
+            budget, month, months, sub_dict = create_default_budget(request)
 
-            context = {'budget': budget, 'month': month, 'sub_dict': sub_dict}
+            context = {'budget': budget, 'month': month, 'months': months,
+                       'sub_dict': sub_dict}
             return render(request, 'budget/budget.html', context)
 
-def display_budget(request):
+def display_budget(request, month_id):
     '''displays the budget'''
 
     try:
-        budget = Budget.objects.filter(owner=request.user).all()[0]
-        month = budget.month_set.all().get()
+        budget = Budget.objects.filter(owner=request.user)[0]
+        months = Month.objects.filter(budget=budget)
+        if month_id:
+            month = months.get(id=month_id)
+        else:
+            month = months.last()
+
         categories = month.category_set.all()
         sub_dict = {}
         for category in categories:
@@ -46,10 +52,12 @@ def display_budget(request):
         sub_dict = {}
         graph = None
         month = None
+        months = None
 
     context = {
         'budget': budget,
         'month': month,
+        'months': months,
         'sub_dict': sub_dict,
         'graph': graph
         }
@@ -68,6 +76,8 @@ def create_default_budget(request):
 
     month = Month(month=month, year=year_int, budget=budget)
     month.save()
+
+    months = Month.objects.all()
 
     # names of default categories an subcategories
     categories_names = {
@@ -104,7 +114,7 @@ def create_default_budget(request):
 
         sub_dict[category] = subs_list
 
-    return budget, month, sub_dict,
+    return budget, month, months, sub_dict
 
 @login_required            
 def edit_subcategory(request, subcategory_id):
@@ -199,3 +209,23 @@ def add_category(request, month_id):
     
     context = {'month': month, 'form': form}
     return render(request, 'budget/add_category.html', context)
+
+@login_required
+def add_month(request):
+    '''add a new month to a budget'''
+
+    budget = Budget.objects.filter(owner=request.user).all()[0]
+
+    if request.method != 'POST':
+        form = AddMonthForm()
+    else:
+        form = AddMonthForm(data=request.POST)
+        if form.is_valid():
+            new_month = form.save(commit=False)
+            new_month.budget = budget
+            new_month.save()
+        
+        return redirect('budget:budget')
+    
+    context = {'budget': budget, 'form': form}
+    return render(request, 'budget/add_month.html', context)
