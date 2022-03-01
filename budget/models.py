@@ -23,18 +23,18 @@ class Month(models.Model):
     '''Class that represents the month in a year'''
 
     class monthOfTheYear(models.TextChoices):
-        JANUARY = 'January'
-        FEBRUARY = 'February'
-        MARCH = 'March'
-        APRIL = 'April'
-        MAY = 'May'
-        JUNE = 'June'
-        JULY = 'July'
-        AUGUST = 'August'
-        SEPTEMBER = 'September'
-        OCTOBER = 'October'
-        NOVEMBER = 'November'
-        DECEMBER = 'December'
+        JANUARY = '01 January'
+        FEBRUARY = '02 February'
+        MARCH = '03 March'
+        APRIL = '04 April'
+        MAY = '05 May'
+        JUNE = '06 June'
+        JULY = '07 July'
+        AUGUST = '08 August'
+        SEPTEMBER = '09 September'
+        OCTOBER = '10 October'
+        NOVEMBER = '11 November'
+        DECEMBER = '12 December'
     
     class theYear(models.IntegerChoices):
         YEAR_2021 = 2021
@@ -49,7 +49,8 @@ class Month(models.Model):
     budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
 
     def __str__(self):
-        name = self.month  + ' ' + str(self.year)
+        month_name = self.month.split()[-1]
+        name = month_name + ' ' + str(self.year)
         return name
 
 class Category(models.Model):

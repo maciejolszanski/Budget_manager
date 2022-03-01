@@ -54,7 +54,7 @@ def display_budget(request, month_id):
 
     try:
         budget = Budget.objects.filter(owner=request.user)[0]
-        months = Month.objects.filter(budget=budget)
+        months = Month.objects.filter(budget=budget).order_by('year', 'month')
         if month_id:
             month = months.get(id=month_id)
         else:
@@ -66,6 +66,7 @@ def display_budget(request, month_id):
             sub_dict[category] = category.subcategory_set.all()
         graph = get_pie_div(month)
     except:
+        # this None values are used when there is no budget created for the user
         budget = None
         sub_dict = {}
         graph = None
@@ -84,7 +85,7 @@ def display_budget(request, month_id):
 def create_default_budget(request):
     '''create budget with default categories and subcategories'''
 
-    budget = Budget(name='moj', owner=request.user)
+    budget = Budget(name=str(request.user)+' budget', owner=request.user)
     budget.save()
 
     date = datetime.datetime.today()

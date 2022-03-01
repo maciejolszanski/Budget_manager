@@ -3,6 +3,7 @@
 {% block page_header %}
     <p style="color:red; font-size:1px">KOCHAM POLUŚKĘ <3</p>
 
+    {%  if budget %}
     <div class="dropdown">
       <h1>This is your budget for 
       <button class="btn btn-secondary btn-lg dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -16,6 +17,7 @@
       </div>
       </h1>
     </div>
+    {% endif %}
 {% endblock page_header %}
 
 {% block content %}
@@ -81,27 +83,6 @@
           <td></td>
       </tr>
     </table>
-
-    
-  <!-- FOR MONTH CHOICE -->
-  <!-- <nav aria-label="...">
-    <ul class="pagination justify-content-center">
-      <li class="page-item disabled">
-        <span class="page-link">Previous</span>
-      </li>
-      <li class="page-item"><a class="page-link" href="#">1</a></li>
-      <li class="page-item active">
-        <span class="page-link">
-          {{month}}
-          <span class="sr-only">(current)</span>
-        </span>
-      </li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
-      <li class="page-item">
-        <a class="page-link" href="#">Next</a>
-      </li>
-    </ul>
-  </nav> -->
   
     {{graph|safe}}
 
