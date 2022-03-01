@@ -8,6 +8,24 @@ from .models import Budget, Category, SubCategory, Month
 from .forms import *
 from .charts import get_pie_div
 
+# names of default categories an subcategories
+CATEGORIES_NAMES = {
+    'Food': [
+        'Grocery shopping',
+        'Eating outside',
+        'Alcohol',
+        ], 
+    'Culture': [
+        'Cinema/Theaters',
+        'Gym',
+        'Books',
+        ],
+    'Hygiene': [
+        'Cosmetics',
+        'Barber',
+        ],
+    }
+
 
 def index(request):
     return render(request, 'budget/index.html')
@@ -79,27 +97,16 @@ def create_default_budget(request):
 
     months = Month.objects.all()
 
-    # names of default categories an subcategories
-    categories_names = {
-        'Food': [
-            'Grocery shopping',
-            'Eating outside',
-            'Alcohol',
-            ], 
-        'Culture': [
-            'Cinema/Theaters',
-            'Gym',
-            'Books',
-            ],
-        'Hygiene': [
-            'Cosmetics',
-            'Barber',
-            ],
-        }
+    sub_dict = create_default_categories(month)
+
+    return budget, month, months, sub_dict
+
+def create_default_categories(month):
+    '''create a dictionary of categories and subcategories'''
     sub_dict = {}
 
     # creating default objects of categories and subcategories
-    for cat, subs in categories_names.items() :
+    for cat, subs in CATEGORIES_NAMES.items() :
 
         category = Category(month=month, name=cat)
         category.save()
@@ -113,8 +120,8 @@ def create_default_budget(request):
             subs_list.append(sub_cat)
 
         sub_dict[category] = subs_list
-
-    return budget, month, months, sub_dict
+    
+    return sub_dict
 
 @login_required            
 def edit_subcategory(request, subcategory_id):
@@ -122,6 +129,7 @@ def edit_subcategory(request, subcategory_id):
 
     subcat = SubCategory.objects.get(id=subcategory_id)
     category = subcat.category
+    month = category.month
 
     if request.method != 'POST':
         form = EditSubCategoryForm(instance=subcat)
@@ -130,7 +138,7 @@ def edit_subcategory(request, subcategory_id):
         if form.is_valid():
             form.save()
 
-            return redirect('budget:budget')
+            return redirect('budget:budget', month_id=month.id)
     
     context = {'subcat': subcat, 'category': category, 'form': form}
     return render(request, "budget/edit_subcategory.html", context)
@@ -140,6 +148,7 @@ def edit_category(request, category_id):
     '''editing the name of category'''
 
     category = Category.objects.get(id=category_id)
+    month = category.month
 
     if request.method != 'POST':
         form = EditCategoryForm(instance=category)
@@ -150,7 +159,7 @@ def edit_category(request, category_id):
             form.save()
 
             if 'return' in request.POST:
-                return redirect('budget:budget')
+                return redirect('budget:budget', month_id=month.id)
 
             elif 'add' in request.POST:
                 return redirect('budget:add_subcategory', 
@@ -164,6 +173,7 @@ def add_subcategory(request, category_id):
     '''add subcategory to category'''
 
     category = Category.objects.get(id=category_id)
+    month = category.month
 
     if request.method != 'POST':
         form = AddSubcategoryForm()
@@ -176,7 +186,7 @@ def add_subcategory(request, category_id):
             new_sub.save()
 
             if 'return' in request.POST:
-                return redirect('budget:budget')
+                return redirect('budget:budget', month_id=month.id)
 
             elif 'next' in request.POST:
                 return redirect('budget:add_subcategory',
@@ -202,7 +212,7 @@ def add_category(request, month_id):
             new_cat.save()
         
             if 'return' in request.POST:
-                return redirect('budget:budget')
+                return redirect('budget:budget', month_id=month_id)
 
             elif 'next' in request.POST:
                 return redirect('budget:add_category', month_id=month_id)
@@ -214,7 +224,7 @@ def add_category(request, month_id):
 def add_month(request):
     '''add a new month to a budget'''
 
-    budget = Budget.objects.filter(owner=request.user).all()[0]
+    budget = Budget.objects.filter(owner=request.user)[0]
 
     if request.method != 'POST':
         form = AddMonthForm()
@@ -224,8 +234,11 @@ def add_month(request):
             new_month = form.save(commit=False)
             new_month.budget = budget
             new_month.save()
-        
-        return redirect('budget:budget')
-    
+   
+            if 'default' in request.POST:
+                create_default_categories(new_month)
+
+            return redirect('budget:budget', month_id=new_month.id)
+
     context = {'budget': budget, 'form': form}
     return render(request, 'budget/add_month.html', context)
