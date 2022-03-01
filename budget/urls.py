@@ -11,6 +11,9 @@ urlpatterns = [
 
     # site with user's budget
     path('budget', views.budget, name='budget'),
+    
+    # site with user's budget for a particular month
+    path('budget/<int:month_id>', views.budget, name='budget'),
 
     # editing the subcategory
     path(
@@ -38,4 +41,7 @@ urlpatterns = [
         views.add_category,
         name='add_category'
     ),
+
+    # add month
+    path('add_month', views.add_month, name='add_month'),
 ]

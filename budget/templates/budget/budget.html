@@ -2,33 +2,28 @@
 
 {% block page_header %}
     <p style="color:red; font-size:1px">KOCHAM POLUŚKĘ <3</p>
-    <h1>This is your budget for {{month}}</h1>
+
+    {%  if budget %}
+    <div class="dropdown">
+      <h1>This is your budget for 
+      <button class="btn btn-secondary btn-lg dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {{month}}
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        {% for mon in months %}
+        <a class="dropdown-item" href="{% url 'budget:budget' mon.id %}">{{mon}}</a>
+        {% endfor %}
+        <a class="dropdown-item" href="{% url 'budget:add_month' %}">Add new month</a>
+      </div>
+      </h1>
+    </div>
+    {% endif %}
 {% endblock page_header %}
 
 {% block content %}
     {% if budget %}
 
-    <!-- FOR MONTH CHOICE -->
-    <!-- <nav aria-label="...">
-        <ul class="pagination">
-          <li class="page-item disabled">
-            <span class="page-link">Previous</span>
-          </li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item active">
-            <span class="page-link">
-              2
-              <span class="sr-only">(current)</span>
-            </span>
-          </li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item">
-            <a class="page-link" href="#">Next</a>
-          </li>
-        </ul>
-      </nav> -->
-
-    <table class="table table-hover table-sm" style="width: 100%">
+      <table class="table table-hover table-sm" style="width: 100%">
       <thead class="thead-dark">
         <tr style="font-size:22px">
             <th>Category</th>
@@ -88,7 +83,7 @@
           <td></td>
       </tr>
     </table>
-
+  
     {{graph|safe}}
 
     {% else %}
@@ -98,5 +93,5 @@
             <button name='create' class="btn btn-primary">Create Budget with default categories</button>
         </form>
     {% endif %}
-{% endblock content %}
 
+{% endblock content %}
